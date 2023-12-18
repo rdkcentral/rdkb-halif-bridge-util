@@ -203,9 +203,9 @@ typedef struct bridgeDetails {
 /* updateBridgeInfo() function */
 /**
 * @brief Provides generic changes which needs to be configured after creating/updating/deleting bridge.
-* @param[out] bridgeInfo - Pointer to bridgeDetails structure that will hold the complete bridge information.
+* @param[in] bridgeInfo - Pointer to bridgeDetails structure that will hold the complete bridge information.
 *
-* @param[out] ifNameToBeUpdated - Is a 64 byte character array where the interface is to be deleted and updated, applicable only during sync. It is vendor specific.
+* @param[in] ifNameToBeUpdated - Is a 64 byte character array where the interface is to be deleted and updated, applicable only during sync. It is vendor specific.
 * @param[in] Opr - It is an enumeration that defines the different network interface or bridge. It provides information about operations whether the request creating/updating/deleting bridge.
 * \n The range of acceptable values is 1 to 4 based on OVS_CMD enum type.
 * 
@@ -236,7 +236,7 @@ extern int checkIfExists(char* iface_name);
 /* removeIfaceFromList() function */
 /**
 * @brief Remove interface from the list of interfaces.
-* @param[out] str - It is a 64 byte character array which has the list of interfaces name. It is vendor specific.
+* @param[in] str - It is a 64 byte character array which has the list of interfaces name. It is vendor specific.
 * @param[in] sub - It is a 64 byte character array that represents the interface name that needs to be removed from the list. It is vendor specific.
 * @return The status of the operation.
 * @retval void
@@ -249,7 +249,7 @@ extern void removeIfaceFromList(char *str, const char *sub);
 /**
 * @brief Check if interface is attached to bridge.
 * @param[in] iface_name - It is a 64 byte character array which represents the interface name. It is vendor specific.
-* @param[out] bridge_name - It is a 64 byte character array which represents the bridge name.It is vendor specific.
+* @param[in] bridge_name - It is a 64 byte character array which represents the bridge name.It is vendor specific.
 * @return The status of the operation.
 * @retval Returns  0 on success or -1 on negative error code.
 *
@@ -260,7 +260,7 @@ extern int checkIfExistsInBridge(char* iface_name, char *bridge_name);
 /* HandlePreConfigVendor() function */
 /**
 * @brief Provides OEM/SOC specific changes which needs to be configured before creating/updating/deleting bridge.
-* @param[out] bridgeInfo - Pointer to bridgeDetails structure that will hold the complte bridge information.
+* @param[in] bridgeInfo - Pointer to bridgeDetails structure that will hold the complte bridge information.
 * 
 * @param[in] InstanceNumber - It is an enumeration that defines the instance number for configuration.
 * \n The range of acceptable values is 1 to 14 based on Config enum type.
@@ -276,7 +276,7 @@ int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 /* HandlePostConfigVendor() function */
 /**
 * @brief Provides OEM/SOC specific changes which needs to be configured after creating/updating/deleting bridge.
-* @param[out] bridgeInfo - Pointer to bridgeDetails structure that will hold the complete bridge information.
+* @param[in] bridgeInfo - Pointer to bridgeDetails structure that will hold the complete bridge information.
 * 
 * @param[in] Config - It is an enumeration that defines the instance number for configuration.
 * \n The range of acceptable values is 1 to 14 based on Config enum type.
