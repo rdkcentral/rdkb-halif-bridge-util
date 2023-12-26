@@ -246,8 +246,8 @@ extern int checkIfExists(char* iface_name);
 * @brief Remove interface from the list of interfaces.
 * @param[in] str - It is a 64 byte character array which has the list of interfaces name. It is vendor specific.
 * @param[in] sub - It is a 64 byte character array that represents the interface name that needs to be removed from the list. It is vendor specific.
-* @return The status of the operation.
-* @retval void
+*
+*
 *
 */
 extern void removeIfaceFromList(char *str, const char *sub);
