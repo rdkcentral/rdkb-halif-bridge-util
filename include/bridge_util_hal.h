@@ -200,6 +200,15 @@ typedef struct bridgeDetails {
  */
 
 
+/*
+ * TODO:
+ *
+ * 1. Extend the return codes by listing out the possible reasons of failure, to improve the interface in the future.
+ *    This was reported during the review for header file migration to opensource github.
+ *
+ */
+
+
 /* updateBridgeInfo() function */
 /**
 * @brief Provides generic changes which needs to be configured after creating/updating/deleting bridge.
@@ -215,7 +224,6 @@ typedef struct bridgeDetails {
 * @return The status of the operation.
 * @retval Returns 0 on success or -1 on negative error code.
 *
-* @remark The caller is responsible for providing a valid memory location for the function arguments.
 */
 
 extern int updateBridgeInfo(bridgeDetails *bridgeInfo, char* ifNameToBeUpdated, int Opr , int type);
@@ -268,7 +276,6 @@ extern int checkIfExistsInBridge(char* iface_name, char *bridge_name);
 * @return The status of the operation.
 * @retval Returns 0 on success or -1 on negative error code.
 *
-* @remark The caller is responsible for providing a valid memory location for the function arguments.
 */
 int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 
@@ -284,7 +291,6 @@ int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 * @return The status of the operation.
 * @retval 0 on success or -1 on negative error code.
 *
-* @remark The caller is responsible for providing a valid memory location for the function arguments.
 */
 int HandlePostConfigVendor(bridgeDetails *bridgeInfo,int Config);
 
