@@ -19,7 +19,7 @@
 /**
 *
 * @file bridge_util_hal.h
-* @brief For Bridge Util Component: Bridge Utils OEM Layer
+* @brief The Bridge Util HAL, to interact with vendor software to control setting such as modes, connection enable/disable, QoS configuration, Ipv4 config. etc.
 */
 
 #ifndef  _BRIDGE_UTIL_OEM_H
@@ -36,8 +36,6 @@
  *
  **/
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -45,7 +43,6 @@
 #include <stdbool.h>
 #include <time.h>
 #include <pthread.h>
-
 #include "OvsAgentApi.h"
 
 /**
@@ -53,39 +50,38 @@
  * @{
  */
 
-#define BRIDGE_UTIL_LOG_FNAME "/rdklogs/logs/bridgeUtils.log" 						// **< Defines Log file path
-
+#define BRIDGE_UTIL_LOG_FNAME "/rdklogs/logs/bridgeUtils.log" 				// **< Defines Log file path
 #define GRE_HANDLER_SCRIPT "/etc/utopia/service.d/service_multinet/handle_gre.sh"	// **< Defines GRE handler script path
+#define TOTAL_IFLIST_SIZE      1024		                                        // **< Defines Total Interface List size
+#define BRIDGE_NAME_SIZE       64			                                // **< Defines Bridge name size
+#define IFACE_NAME_SIZE        64			                                // **< Defines Interface name size
+#define IFLIST_SIZE	       256			                                // **< Defines List Size 
+#define MAX_LOG_BUFF_SIZE      1024		                                        // **< Defines Interface List size
+#define TIMESTAMP	       64			                                // **< Defines Timestamp value
+#define  INTERFACE_EXIST       0		                                        // **< Defines value for Existing IF
+#define  INTERFACE_NOT_EXIST  -1		                                        // **< Defines value for non existing IF 
 
-#define TOTAL_IFLIST_SIZE 	1024		// **< Defines Total Interface List size
-#define BRIDGE_NAME_SIZE  	64			// **< Defines Bridge name size
-#define IFACE_NAME_SIZE  	64			// **< Defines Interface name size
-
-#define IFLIST_SIZE			256			// **< Defines 
-#define MAX_LOG_BUFF_SIZE	1024		// **< Defines Interface List size
-#define TIMESTAMP			64			// **< Defines Timestamp value
-
-#define  INTERFACE_EXIST       0		// **< Defines value for Existing IF
-#define  INTERFACE_NOT_EXIST  -1		// **< Defines value for non existing IF 
-
-extern int DeviceMode; // router = 0, bridge = 2
-
-extern int MocaIsolation_Val; 								// Global variable declaring MocaIsolation value
-
-extern int need_wifi_gw_refresh;							// Global flag to indicate whether wifi gateway refresh needed
-extern int need_switch_gw_refresh;							// Global flag to indicate whether switch gateway refresh needed
-extern int syncMembers;										// Global variable for synchronisation purpose				
-extern int BridgeOprInPropgress;							// Gloabal variable indicating bridge operation in progress
-extern FILE *logFp;											// File pointer for logging
-extern char log_buff[MAX_LOG_BUFF_SIZE];					// Global character buffer for log messages
+extern int DeviceMode;                                          // router = 0, bridge = 2
+extern int MocaIsolation_Val; 				        // Global variable declaring MocaIsolation value
+extern int need_wifi_gw_refresh;				// Global flag to indicate whether wifi gateway refresh needed
+extern int need_switch_gw_refresh;				// Global flag to indicate whether switch gateway refresh needed
+extern int syncMembers;						// Global variable for synchronisation purpose				
+extern int BridgeOprInPropgress;				// Gloabal variable indicating bridge operation in progress
+extern FILE *logFp;						// File pointer for logging
+extern char log_buff[MAX_LOG_BUFF_SIZE];			// Global character buffer for log messages
 extern char log_msg_wtime[MAX_LOG_BUFF_SIZE+TIMESTAMP];		// Global character buffer for log messages with timestamp
-extern char primaryBridgeName[64];							// Global character buffer for primary bridge name
-extern int PORT2ENABLE;										// Gloabal variable for status of port
-extern int ethWanEnabled;									// Global variable for status of Ethernet WAN
-extern char ethWanIfaceName[64];							// Global character buffer for Ethernet Wan Interface name	
+extern char primaryBridgeName[64];				// Global character buffer for primary bridge name
+extern int PORT2ENABLE;						// Gloabal variable for status of port
+extern int ethWanEnabled;				        // Global variable for status of Ethernet WAN
+extern char ethWanIfaceName[64];				// Global character buffer for Ethernet Wan Interface name	
+extern struct tm *timeinfo;					// Pointer to struct to access time related information
+extern time_t utc_time;						// Variable to store UTC time
 
-extern struct tm *timeinfo;									// Pointer to struct to access time related information
-extern time_t utc_time;										// Variable to store UTC time
+/*
+ *
+ * TODO: Re-write the logging system to be generic.
+ *
+ */
 
 /**
  * @brief bridge_util_log(fmt ...) 
@@ -110,8 +106,6 @@ extern time_t utc_time;										// Variable to store UTC time
 **********************************************************************/
 
 /**
- * @enum Config
- *
  * @brief Enumerates configuration options for BridgeUtils API's.
  * 
  * This enumeration defines different configuration options for a system includes 
@@ -125,30 +119,33 @@ enum Config {
 	HOTSPOT_2G = 3,						// **< Hotspot 2G configuration
 	HOTSPOT_5G = 4,						// **< Hotspot 5G configuration
 	LOST_N_FOUND = 6,					// **< Lost and Found configuration
-	HOTSPOT_SECURE_2G = 7,				// **< Hotspot Secure 2G configuration
-	HOTSPOT_SECURE_5G = 8,				// **< Hotspot Secure 5G configuration
+	HOTSPOT_SECURE_2G = 7,				        // **< Hotspot Secure 2G configuration
+	HOTSPOT_SECURE_5G = 8,				        // **< Hotspot Secure 5G configuration
 	MOCA_ISOLATION = 9,					// **< MOCA Isolation configuration
 	MESH_BACKHAUL = 10,					// **< Mesh Backhaul configuration
 	ETH_BACKHAUL = 11,					// **< ETH Backhaul configuration
-	MESH = 12,							// **< Mesh configuration
-	MESH_WIFI_BACKHAUL_2G = 13,			// **< Mesh Wifi backhaul 2G configuration
-	MESH_WIFI_BACKHAUL_5G = 14			// **< Mesh Wifi backhaul 5G configuration
+	MESH = 12,						// **< Mesh configuration
+	MESH_WIFI_BACKHAUL_2G = 13,			        // **< Mesh Wifi backhaul 2G configuration
+	MESH_WIFI_BACKHAUL_5G = 14			        // **< Mesh Wifi backhaul 5G configuration
 #if defined  (WIFI_MANAGE_SUPPORTED)
-        ,MANAGE_WIFI_BRIDGE = 17		// **< Manage Wifi bridge configuration
+        ,MANAGE_WIFI_BRIDGE = 17		                // **< Manage Wifi bridge configuration
 #endif /* WIFI_MANAGE_SUPPORTED*/
 };
 
+/**
+ * TODO: Correct Inconsistent coding standards in the enum definitions
+ */
 
 /**
  * @enum INTERFACE_TYPE
  *
- * @brief Enumeration of Interface types for BridgeUtils API's.
+ * @brief Defines interface types for network configuration and management in BridgeUtils.
  * 
  * This enum defines different interface types such as Wired, wireless 
  * interfaces for use with BridgeUtils API's
  */
 enum INTERFACE_TYPE {
-    IF_BRIDGE_BRIDGEUTIL = 1, 	// **< Represents Bridge Interface for BridgeUtil
+    IF_BRIDGE_BRIDGEUTIL = 1, 	        // **< Represents Bridge Interface for BridgeUtil
     IF_VLAN_BRIDGEUTIL = 2,		// **< Represents Virtual Local Area Network Interface for BridgeUtil
     IF_GRE_BRIDGEUTIL = 3,		// **< Represents Generic Routing Encapsulation Interface for BridgeUtil
     IF_MOCA_BRIDGEUTIL = 4,		// **< Represents Multimedia Over Coax Alliance Interface for BridgeUtil
@@ -157,6 +154,9 @@ enum INTERFACE_TYPE {
     IF_OTHER_BRIDGEUTIL			// **<Other/Unspecified Interface type for BridgeUtil
 };
 
+/**
+ * TODO: Correct Inconsistent coding standards in the enum definitions
+ */
 
 /**
  * @enum BridgeOpr
@@ -172,13 +172,20 @@ enum BridgeOpr {
 /**********************************************************************
                 STRUCTURE DEFINITIONS
 **********************************************************************/
+
+/*
+ * TODO: Coding standards are inconsistent in this file and should be corrected.
+ */
+
 /**
  * @struct bridgeDetails
  * @brief Details of bridge configuration
  * 
- * This structure holds the details of bridge configuration including Names of bridge, 
- * virtual parent interface, VLAN ID, List of ithernet IF and Interface associated with bridge. 
-*/
+ * The bridgeDetails structure is a comprehensive representation of a network bridge configuration within the system.
+ * It is designed to encapsulate all the necessary details required for the setup, management, and operation of a 
+ * network bridge. This includes not only the identification and categorization of the bridge (through names and VLAN IDs)
+ * but also the association of various network interfaces like Ethernet, MoCA, GRE, and WiFi with the bridge. 
+ */
 
 typedef struct bridgeDetails {
 	char bridgeName[BRIDGE_NAME_SIZE];				// **< Name of bridge
@@ -199,88 +206,82 @@ typedef struct bridgeDetails {
  * @{
  */
 
-
 /*
- * TODO:
+ * TODO: Extend the return codes by listing out the possible reasons of failure, to improve the interface in the future. This was reported during the review for header file migration to opensource github.
  *
- * 1. Extend the return codes by listing out the possible reasons of failure, to improve the interface in the future.
- *    This was reported during the review for header file migration to opensource github.
+ * TODO: correct usage of enum types, and not int.
  *
  */
 
-
-/* updateBridgeInfo() function */
 /**
-* @brief Provides generic changes which needs to be configured after creating/updating/deleting bridge.
+* @brief Provides the details of a specified network bridge based on the provided operation and type. 
 * @param[in] bridgeInfo - Pointer to bridgeDetails structure that will hold the complete bridge information.
-*
-* @param[in] ifNameToBeUpdated - Is a 64 byte character array where the interface is to be deleted and updated, applicable only during sync. It is vendor specific.
+* @param[in] ifNameToBeUpdated - It is a character array where the interface is to be deleted and updated, applicable only during sync. The possible value is "moca0", "wifi0", "eth0". This array should be 
+*                                null-terminated.
 * @param[in] Opr - It is an enumeration that defines the different network interface or bridge. It provides information about operations whether the request creating/updating/deleting bridge.
-* \n The range of acceptable values is 1 to 4 based on OVS_CMD enum type.
-* 
+*                  \n The range of acceptable values is 1 to 4 based on OVS_CMD enum type.
 * @param[in] type - It is an enumeration that defines the different types of interfaces and in case of sync delete the value is set to unknown/other.
-* \n The range of acceptable values is 1 to 7 based on INTERFACE_TYPE enum type.
+*                   \n The range of acceptable values is 1 to 7 based on INTERFACE_TYPE enum type.
 * 
-* @return The status of the operation.
-* @retval Returns 0 on success or -1 on negative error code.
+* @return The result status of the operation.
+* @retval 0 on success.
+* @retval -1 on failure.
 *
 */
-
 extern int updateBridgeInfo(bridgeDetails *bridgeInfo, char* ifNameToBeUpdated, int Opr , int type);
 
-
-
-/* checkIfExists() function */
 /**
-* @brief Check if interface is created.
+* @brief Check if interface is exists.
 * @param[in] iface_name - It is a 64 byte character array which represents the name of the interface. It is vendor specific.
-* @return The status of the operation.
-* @retval Returns 0 on success or -1 on negative error code.
+*
+* @return The result status of the operation.
+* @retval 0 on success.
+* @retval -1 on failure.
 *
 */
 extern int checkIfExists(char* iface_name);
 
-
-/* removeIfaceFromList() function */
 /**
 * @brief Remove interface from the list of interfaces.
-* @param[in] str - It is a 64 byte character array which has the list of interfaces name. It is vendor specific.
-* @param[in] sub - It is a 64 byte character array that represents the interface name that needs to be removed from the list. It is vendor specific.
-*
-*
+* @param[in] str - It is a character array which has the list of interfaces name. The possible value is "wl0 wl11 moca0 ath0 eth3".
+* @param[in] sub - It is a character array that represents the interface name that needs to be removed from the list. The possible value is "moca0".
 *
 */
 extern void removeIfaceFromList(char *str, const char *sub);
 
-
-/* checkIfExistsInBridge() function */
 /**
 * @brief Check if interface is attached to bridge.
 * @param[in] iface_name - It is a 64 byte character array which represents the interface name. It is vendor specific.
 * @param[in] bridge_name - It is a 64 byte character array which represents the bridge name.It is vendor specific.
-* @return The status of the operation.
-* @retval Returns  0 on success or -1 on negative error code.
+*
+* @return The result status of the operation.
+* @retval 0 on success.
+* @retval -1 on failure.
 *
 */
 extern int checkIfExistsInBridge(char* iface_name, char *bridge_name);
+/**
+* TODO: InstanceNumber must use Config enum in the future.
+*/
 
-
-/* HandlePreConfigVendor() function */
 /**
 * @brief Provides OEM/SOC specific changes which needs to be configured before creating/updating/deleting bridge.
 * @param[in] bridgeInfo - Pointer to bridgeDetails structure that will hold the complte bridge information.
 * 
 * @param[in] InstanceNumber - It is an enumeration that defines the instance number for configuration.
-* \n The range of acceptable values is 1 to 14 based on Config enum type.
+*                             \n The range of acceptable values is 1 to 14 based on Config enum type.
 * 
-* @return The status of the operation.
-* @retval Returns 0 on success or -1 on negative error code.
+* @return The result status of the operation.
+* @retval 0 on success.
+* @retval -1 on failure.
 *
 */
 int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 
+/**
+* TODO: InstanceNumber must use Config enum in the future.
+*/
 
-/* HandlePostConfigVendor() function */
 /**
 * @brief Provides OEM/SOC specific changes which needs to be configured after creating/updating/deleting bridge.
 * @param[in] bridgeInfo - Pointer to bridgeDetails structure that will hold the complete bridge information.
@@ -288,18 +289,17 @@ int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 * @param[in] Config - It is an enumeration that defines the instance number for configuration.
 * \n The range of acceptable values is 1 to 14 based on Config enum type.
 * 
-* @return The status of the operation.
-* @retval 0 on success or -1 on negative error code.
+* @return The result status of the operation.
+* @retval 0 on success.
+* @retval -1 on failure.
 *
 */
 int HandlePostConfigVendor(bridgeDetails *bridgeInfo,int Config);
 
-
-/* getVendorIfaces() function */
 /**
-* @brief Provides vendor interface information for creating/updating/deleting bridge.
+* @brief Retrieves a list of vendor-specific interface names. Provides vendor interface information for creating/updating/deleting bridge.
 *
-* @return The status of the operation.
+* @return The result status of the operation.
 * @retval vendor interface which is a 64 byte character array or NULL.
 *
 */
