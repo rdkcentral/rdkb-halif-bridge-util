@@ -12,47 +12,42 @@ The diagram below describes a high-level software architecture of the Bridge Uti
 
 ![Bridge Util HAL Architecture Diag](images/BridgeUtil_HAL_Architecture.png)
 
-Bridge Util HAL is for an abstraction layer, implemented to interact with vendor software for setting the specific details such as modes, connection enable/disable, QoS configuration, Ipv4 config. etc.
+Bridge Util HAL is an abstraction layer to interact with vendor software to control setting such as modes, connection enable/disable, QoS configuration, Ipv4 config. etc.
 
 ## Component Runtime Execution Requirements
 
 ### Initialization and Startup
 
-Below Initialization API's provide opportunity for the HAL code to initialize the appropriate DB's, start threads etc.
-
-Bridge Util will invoke below API's while executing operations on bridges. Vendor should handle any required operations in the API's
+The below-mentioned APIs initialize the Bridge util HAL layers/code. The Bridge util client module should call the mentioned APIs initially during bootup/initialization.
 
 1. `HandlePreConfigVendor()`
 2. `HandlePostConfigVendor()`
 
-3rd party vendors to handle it appropriately to meet operational requirements. This interface is expected to block if the hardware is not ready.
+Third-party vendors must implement appropriate handling to ensure operational requirements are met, this interface should block until hardware readiness.
 
 ## Threading Model
 
-Bridge Util HAL is not thread safe.
+The interface is not required to be thread-safe.
 
-Any module which is invoking the api should ensure calls are made in a thread safe manner.
+Any module that is invoking the MTA HAL API should ensure calls are made in a thread-safe manner.
 
-Vendors can create internal threads/events to meet their operation requirements. These should be responsible to synchronize between the calls, events and cleaned up on closure.
+Vendors can create internal threads/events for operational needs, but must ensure synchronization before closure cleanup.
 
 ## Process Model
 
-All API's are expected to be called from multiple process.
+API's are expected to be called from multiple process.
 
 ## Memory Model
 
-The client is responsible to allocate and de-allocate memory for necessary API's as specified in API Documentation.
+Clients must allocate and deallocate memory for API-required data as mandated in the API documentation.
 
-Different 3rd party vendors allowed to allocate memory for internal operational requirements. In this case 3rd party implementations
-should be responsible to de-allocate internally.
+Different 3rd party vendors allowed to allocate memory for internal operational requirements. In this case 3rd party implementations should be responsible to de-allocate internally.
 
-TODO:
-State a footprint requirement. Example: This should not exceed XXXX KB.
+TODO: State a footprint requirement. Example: This should not exceed XXXX KB.
 
 ## Power Management Requirements
 
 The HAL is not involved in any of the power management operation.
-Any power management state transitions MUST not affect the operation of the HAL.
 
 ## Asynchronous Notification Model
 
@@ -64,8 +59,9 @@ The API's are expected to work synchronously and should complete within a time p
 
 Any calls that can fail due to the lack of a response should have a timeout period in accordance with any API documentation.
 
-TODO:
-As we state that they should complete within a time period, we need to state what that time target is, and pull it from the spec if required. Define the timeout requirement.
+TODO: As we state that they should complete within a time period, we need to state what that time target is, and pull it from the spec if required. Define the timeout requirement.
+
+TODO: Error return codes will be extended in the future to give more detail.
 
 ## Internal Error Handling
 
@@ -73,7 +69,7 @@ All the Bridge Util HAL API's should return error synchronously as a return argu
 
 ## Persistence Model
 
-There is no requirement for HAL to persist any setting information. The caller is responsible to persist any settings related to their implementation.
+There is no requirement for HAL to persist any setting information.
 
 # Nonfunctional requirements
 
@@ -87,7 +83,7 @@ The logging should be consistent across all HAL components.
 
 If the vendor is going to log then it has to be logged in `xxx_vendor_hal.log` file name which can be placed in `/rdklogs/logs/` or `/var/tmp/` directory.
 
-Logging should be defined with log levels as per Linux standard logging.
+To ensure consistency with Linux standard logging, it is recommended that log levels be defined.
 
 ## Memory and performance requirements
 
@@ -105,7 +101,7 @@ Bridge Util HAL implementation is expected to released under the Apache License 
 
 ## Build Requirements
 
-The source code should be able to be built under Linux Yocto environment and should be delivered as a shared library named as `libhal_wan.so`
+The source code should be able to be built under Linux Yocto environment and should be delivered as a shared library named as `libhalbridge_utils.so`
 
 ## Variability Management
 
