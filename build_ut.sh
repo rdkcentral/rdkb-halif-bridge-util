@@ -27,7 +27,7 @@ TEST_REPO=$(git remote -vv | head -n1 | awk -F ' ' '{print $2}' | sed 's/halif/h
 
 # Set default UT_PROJECT_VERSION to master
 if [ -z "${UT_PROJECT_VERSION}" ]; then
-    UT_PROJECT_VERSION=master
+    UT_PROJECT_VERSION=main
 fi
 
 UT_DIR="./ut"
