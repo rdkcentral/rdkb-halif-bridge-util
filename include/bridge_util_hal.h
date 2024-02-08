@@ -232,7 +232,7 @@ extern int updateBridgeInfo(bridgeDetails *bridgeInfo, char* ifNameToBeUpdated, 
 
 /**
 * @brief Check if interface is exists.
-* @param[in] iface_name - It is a 64 byte character array which represents the name of the interface. It is vendor specific.
+* @param[in] iface_name - It is a character array which represents the name of the interface. It is vendor specific.
 *
 * @return The result status of the operation.
 * @retval 0 on success.
@@ -251,8 +251,8 @@ extern void removeIfaceFromList(char *str, const char *sub);
 
 /**
 * @brief Check if interface is attached to bridge.
-* @param[in] iface_name - It is a 64 byte character array which represents the interface name. It is vendor specific.
-* @param[in] bridge_name - It is a 64 byte character array which represents the bridge name.It is vendor specific.
+* @param[in] iface_name - It is a character array which represents the interface name. It is vendor specific.
+* @param[in] bridge_name - It is a character array which represents the bridge name.It is vendor specific.
 *
 * @return The result status of the operation.
 * @retval 0 on success.
@@ -287,7 +287,7 @@ int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 * @param[in] bridgeInfo - Pointer to bridgeDetails structure that will hold the complete bridge information.
 * 
 * @param[in] Config - It is an enumeration that defines the instance number for configuration.
-* \n The range of acceptable values is 1 to 14 based on Config enum type.
+*                     \n The range of acceptable values is 1 to 14 based on Config enum type.
 * 
 * @return The result status of the operation.
 * @retval 0 on success.
@@ -300,7 +300,8 @@ int HandlePostConfigVendor(bridgeDetails *bridgeInfo,int Config);
 * @brief Retrieves a list of vendor-specific interface names. Provides vendor interface information for creating/updating/deleting bridge.
 *
 * @return The result status of the operation.
-* @retval vendor interface which is a 64 byte character array or NULL.
+* @retval vendor interface which is a character array.
+* @retval NULL - is returned if there are no interfaces
 *
 */
 char *getVendorIfaces();
