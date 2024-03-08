@@ -61,6 +61,12 @@
 #define  INTERFACE_EXIST       0		                                        // **< Defines value for Existing IF
 #define  INTERFACE_NOT_EXIST  -1		                                        // **< Defines value for non existing IF 
 
+/*
+ *
+ * TODO: Module requires an upgrade to be self-contained, and the interface cannot share or depend on variables from other modules.
+ *
+ */
+
 extern int DeviceMode;                                          // router = 0, bridge = 2
 extern int MocaIsolation_Val; 				        // Global variable declaring MocaIsolation value
 extern int need_wifi_gw_refresh;				// Global flag to indicate whether wifi gateway refresh needed
@@ -215,8 +221,8 @@ typedef struct bridgeDetails {
 
 /**
 * @brief Provides the details of a specified network bridge based on the provided operation and type. 
-* @param[in] bridgeInfo - Pointer to bridgeDetails structure that will hold the complete bridge information.
-* @param[in] ifNameToBeUpdated - It is a character array where the interface is to be deleted and updated, applicable only during sync. The possible value is "moca0", "wifi0", "eth0". This array should be 
+* @param[in] bridgeInfo - Hold the complete bridge information.
+* @param[in] ifNameToBeUpdated - Interface is to be deleted and updated, applicable only during sync. The possible value is "moca0", "wifi0", "eth0". This array should be 
 *                                null-terminated.
 * @param[in] Opr - It is an enumeration that defines the different network interface or bridge. It provides information about operations whether the request creating/updating/deleting bridge.
 *                  \n The range of acceptable values is 1 to 4 based on OVS_CMD enum type.
@@ -284,10 +290,9 @@ int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 
 /**
 * @brief Provides OEM/SOC specific changes which needs to be configured after creating/updating/deleting bridge.
-* @param[in] bridgeInfo - Pointer to bridgeDetails structure that will hold the complete bridge information.
-* 
-* @param[in] Config - It is an enumeration that defines the instance number for configuration.
-*                     \n The range of acceptable values is 1 to 14 based on Config enum type.
+* @param[in] bridgeInfo - Hold the complete bridge information. 
+* @param[in] Config - Defines the instance number for configuration.
+*
 * 
 * @return The result status of the operation.
 * @retval 0 on success.
