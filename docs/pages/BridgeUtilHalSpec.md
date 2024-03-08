@@ -10,9 +10,15 @@
 
 The diagram below describes a high-level software architecture of the Bridge Util HAL module stack.
 
-![Bridge Util HAL Architecture Diag](images/BridgeUtil_HAL_Architecture.png)
+```mermaid
 
-Bridge Util HAL is an abstraction layer to interact with vendor software to control setting such as modes, connection enable/disable, QoS configuration, Ipv4 config. etc.
+flowchart
+    Caller <--> HALIF[HAL Interface - bridge_util_hal.h\n`HAL IF Specifcation / Contract Requirement`]
+    HALIF <--> VendorWrapper[HAL\nVendor Implementation]
+    VendorWrapper <--> VendorDrivers[Vendor Drivers\nImplementation]
+```
+
+Bridge Util HAL is an abstraction layer to interact with vendor software to control settings such as modes, connection enable/disable, QoS configuration, IPv4 config, etc.
 
 ## Component Runtime Execution Requirements
 
@@ -39,9 +45,15 @@ API's are expected to be called from multiple process.
 
 ## Memory Model
 
-Clients must allocate and deallocate memory for API-required data as mandated in the API documentation.
+### Caller Responsibilities
 
-Different 3rd party vendors allowed to allocate memory for internal operational requirements. In this case 3rd party implementations should be responsible to de-allocate internally.
+Ownership of Memory: Callers must assume full responsibility for managing any memory explicitly given to the module functions to populate. This includes proper allocation and de-allocation to prevent memory leaks.
+
+### Module Responsibilities
+
+Internal Memory Handling: Modules must independently allocate and de-allocate memory for their internal operations, ensuring efficient resource management.
+
+Mandatory Cleanup: Modules are required to release all internally allocated memory upon closure to prevent resource leaks.
 
 TODO: State a footprint requirement. Example: This should not exceed XXXX KB.
 
@@ -71,19 +83,19 @@ All the Bridge Util HAL API's should return error synchronously as a return argu
 
 There is no requirement for HAL to persist any setting information.
 
-# Nonfunctional requirements
+## Nonfunctional requirements
 
 Following non functional requirement should be supported by the component.
 
 ## Logging and debugging requirements
 
-The component should log all the error and critical informative messages, preferably using printf, syslog which helps to debug/triage the issues and understand the functional flow of the system.
+The component is should log all the error and critical informative messages which helps to debug/triage the issues and understand the functional flow of the system.
 
-The logging should be consistent across all HAL components.
+The logging should be consistence across all HAL components.
 
-If the vendor is going to log then it has to be logged in `xxx_vendor_hal.log` file name which can be placed in `/rdklogs/logs/` or `/var/tmp/` directory.
+If the vendor is going to log then it has to be logged in `bridge-util_vendor_hal.log` file name.
 
-To ensure consistency with Linux standard logging, it is recommended that log levels be defined.
+Logging should be defined with log levels as per Linux standard logging.
 
 ## Memory and performance requirements
 
@@ -116,48 +128,48 @@ None
 ## Interface API Documentation
 
 All HAL function prototypes and datatype definitions are available in `bridge_util_hal.h` file.
-    
      1. Components/Process must include bridge_util_hal.h to make use of Bridge Util HAL capabilities.
-     2. Components/Process should add linker dependency for `libbridge_utils.la`
+     2. Components/Process should add linker dependency for `libbridge_utils.so`.
 
 ## Theory of operation and key concepts
 
 Covered as per "Description" sections in the API documentation.
- 
+
 ## Sequence Diagram
 
 ```mermaid
 sequenceDiagram
 participant Caller
-participant Bridge Util HAL
-participant Vendor
+participant Bridge Util HALIF Specification
+participant Vendor Wrapper
 Note over Caller: Init once during bootup, Needed for Dependent API's. <br> Ignore this if caller doesn't have any Dependent API's
-Caller->>Bridge Util HAL: getVendorIfaces()
-Bridge Util HAL->>Vendor: 
-Vendor ->>Bridge Util HAL: 
-Bridge Util HAL->>Caller: getVendorIfaces() return
+Caller->>Bridge Util HALIF Specification: getVendorIfaces()
+Bridge Util HALIF Specification->>Vendor Wrapper: 
+Vendor Wrapper->>Bridge Util HALIF Specification: 
+Bridge Util HALIF Specification->>Caller: getVendorIfaces() return
 
-Caller->>Bridge Util HAL: removeIfaceFromList()
-Bridge Util HAL->>Vendor: 
-Vendor ->>Bridge Util HAL: 
-Bridge Util HAL->>Caller: removeIfaceFromList() return
+Caller->>Bridge Util HALIF Specification: removeIfaceFromList()
+Bridge Util HALIF Specification->>Vendor Wrapper: 
+Vendor Wrapper->>Bridge Util HALIF Specification: 
+Bridge Util HALIF Specification->>Caller: removeIfaceFromList() return
 
-Caller->>Bridge Util HAL: checkIfExist()
-Bridge Util HAL->>Vendor: 
-Vendor ->>Bridge Util HAL: 
-Bridge Util HAL->>Caller: checkIfExist() return
+Caller->>Bridge Util HALIF Specification: checkIfExist()
+Bridge Util HALIF Specification->>Vendor Wrapper: 
+Vendor Wrapper->>Bridge Util HALIF Specification: 
+Bridge Util HALIF Specification->>Caller: checkIfExist() return
 
-Caller->>Bridge Util HAL: checkIfExistinBridge()
-Bridge Util HAL->>Vendor: 
-Vendor ->>Bridge Util HAL: 
-Bridge Util HAL->>Caller: checkIfExistinBridge() return
+Caller->>Bridge Util HALIF Specification: checkIfExistinBridge()
+Bridge Util HALIF Specification->>Vendor Wrapper: 
+Vendor Wrapper->>Bridge Util HALIF Specification: 
+Bridge Util HALIF Specification->>Caller: checkIfExistinBridge() return
 
-Caller->>Bridge Util HAL: updateBridgeInfo()
-Bridge Util HAL->>Vendor: 
-Vendor ->>Bridge Util HAL: 
-Bridge Util HAL->>Caller: updateBridgeInfo() return
+Caller->>Bridge Util HALIF Specification: updateBridgeInfo()
+Bridge Util HALIF Specification->>Vendor Wrapper: 
+Vendor Wrapper ->>Bridge Util HALIF Specification: 
+Bridge Util HALIF Specification->>Caller: updateBridgeInfo() return
 
-Caller->>Bridge Util HAL: HandlePreConfigVendor()
-Bridge Util HAL->>Vendor: 
-Vendor ->>Bridge Util HAL: 
-Bridge Util HAL->>Caller: HandlePreConfigVendor() return
+Caller->>Bridge Util HALIF Specification: HandlePreConfigVendor()
+Bridge Util HALIF Specification->>Vendor Wrapper: 
+Vendor Wrapper ->>Bridge Util HALIF Specification: 
+Bridge Util HALIF Specification->>Caller: HandlePreConfigVendor() return
+```
