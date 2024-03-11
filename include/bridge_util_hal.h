@@ -224,9 +224,9 @@ typedef struct bridgeDetails {
 * @param[in] bridgeInfo - Hold the complete bridge information.
 * @param[in] ifNameToBeUpdated - Interface is to be deleted and updated, applicable only during sync. The possible value is "moca0", "wifi0", "eth0". This array should be 
 *                                null-terminated.
-* @param[in] Opr - It is an enumeration that defines the different network interface or bridge. It provides information about operations whether the request creating/updating/deleting bridge.
+* @param[in] Opr - Different network interface or bridge. It provides information about operations whether the request creating/updating/deleting bridge.
 *                  \n The range of acceptable values is 1 to 4 based on OVS_CMD enum type.
-* @param[in] type - It is an enumeration that defines the different types of interfaces and in case of sync delete the value is set to unknown/other.
+* @param[in] type - Different types of interfaces and in case of sync delete the value is set to unknown/other.
 *                   \n The range of acceptable values is 1 to 7 based on INTERFACE_TYPE enum type.
 * 
 * @return The result status of the operation.
@@ -238,7 +238,7 @@ extern int updateBridgeInfo(bridgeDetails *bridgeInfo, char* ifNameToBeUpdated, 
 
 /**
 * @brief Check if interface is exists.
-* @param[in] iface_name - It is a character array which represents the name of the interface. It is vendor specific.
+* @param[in] iface_name - Represents the name of the interface. It is vendor specific.
 *
 * @return The result status of the operation.
 * @retval 0 on success.
@@ -249,16 +249,19 @@ extern int checkIfExists(char* iface_name);
 
 /**
 * @brief Remove interface from the list of interfaces.
-* @param[in] str - It is a character array which has the list of interfaces name. The possible value is "wl0 wl11 moca0 ath0 eth3".
-* @param[in] sub - It is a character array that represents the interface name that needs to be removed from the list. The possible value is "moca0".
+* @param[in] str - List of interfaces name. The possible value is "wl0 wl11 moca0 ath0 eth3".
+* @param[in] sub - Interface name that needs to be removed from the list. The possible value is "moca0".
+*
+* @note If the specified interface name is not found in the list, no action is taken.
+*       This function does not report an error in such cases.
 *
 */
 extern void removeIfaceFromList(char *str, const char *sub);
 
 /**
 * @brief Check if interface is attached to bridge.
-* @param[in] iface_name - It is a character array which represents the interface name. It is vendor specific.
-* @param[in] bridge_name - It is a character array which represents the bridge name.It is vendor specific.
+* @param[in] iface_name - Represents the interface name. It is vendor specific.
+* @param[in] bridge_name - Represents the bridge name. It is vendor specific.
 *
 * @return The result status of the operation.
 * @retval 0 on success.
@@ -272,9 +275,8 @@ extern int checkIfExistsInBridge(char* iface_name, char *bridge_name);
 
 /**
 * @brief Provides OEM/SOC specific changes which needs to be configured before creating/updating/deleting bridge.
-* @param[in] bridgeInfo - Pointer to bridgeDetails structure that will hold the complte bridge information.
-* 
-* @param[in] InstanceNumber - It is an enumeration that defines the instance number for configuration.
+* @param[in] bridgeInfo - Hold the complte bridge information.
+* @param[in] InstanceNumber - Defines the instance number for configuration.
 *                             \n The range of acceptable values is 1 to 14 based on Config enum type.
 * 
 * @return The result status of the operation.
@@ -292,7 +294,7 @@ int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 * @brief Provides OEM/SOC specific changes which needs to be configured after creating/updating/deleting bridge.
 * @param[in] bridgeInfo - Hold the complete bridge information. 
 * @param[in] Config - Defines the instance number for configuration.
-*
+*                     \n The range of acceptable values is 1 to 14 based on Config enum type.
 * 
 * @return The result status of the operation.
 * @retval 0 on success.
