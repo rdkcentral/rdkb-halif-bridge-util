@@ -89,13 +89,13 @@ Following non functional requirement should be supported by the component.
 
 ## Logging and debugging requirements
 
-The component is should log all the error and critical informative messages which helps to debug/triage the issues and understand the functional flow of the system.
+The Bridge Utils HAL component must record all errors and critical informative messages. This can be achieved by using either the printf or the syslog method. These tools are useful in identifying, and debugging the issues and understanding the functional flow of the system.
 
-The logging should be consistence across all HAL components.
+It is recommended that each HAL component follows the same logging process. If logging is required, vendors should log in to the bridge_util_vendor_hal.log file, which can be found in the /var/tmp/ or /rdklogs/logs/ directories.
 
-If the vendor is going to log then it has to be logged in `bridge-util_vendor_hal.log` file name.
+To ensure consistency with Linux standard logging, it is recommended that log levels be defined.
 
-Logging should be defined with log levels as per Linux standard logging.
+Log levels can be FATAL, ERROR, WARNING, NOTICE, INFO, DEBUG, TRACE
 
 ## Memory and performance requirements
 
