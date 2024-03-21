@@ -194,14 +194,14 @@ enum BridgeOpr {
  */
 
 typedef struct bridgeDetails {
-	char bridgeName[BRIDGE_NAME_SIZE];				// **< Name of bridge
-	char vlan_name[BRIDGE_NAME_SIZE];				// **< Name of Virtual Local Area Network 
-    	char VirtualParentIfname[BRIDGE_NAME_SIZE];	// **< Name of Virtual parent interface
-	int  vlanID;									// **< ID of Virtual Local Area Network 
-	char ethIfList[IFLIST_SIZE];					// **< List of Ethernet Interface
-	char MoCAIfList[IFLIST_SIZE];					// **< List of Multimedia Over Coax Alliance Interface
-	char GreIfList[IFLIST_SIZE];					// **< List of GRE Interface
-	char WiFiIfList[IFLIST_SIZE];					// **< List of Wifi Interface
+	char bridgeName[BRIDGE_NAME_SIZE];				// **< Name of bridge. Possible values are brlan0, brlan1, privbr, br-home.
+	char vlan_name[BRIDGE_NAME_SIZE];				// **< Name of Virtual Local Area Network. Possible values are vlan1, vlan10, guest_vlan.
+    	char VirtualParentIfname[BRIDGE_NAME_SIZE];	                // **< Name of Virtual parent interface. Possible values are eth0, eth1, wan0.
+	int  vlanID;							// **< ID of Virtual Local Area Network. Possible values are 1, 2, 3, 10, 100.
+	char ethIfList[IFLIST_SIZE];					// **< List of Ethernet Interface. Possible values are eth0, eth1, eth2.
+	char MoCAIfList[IFLIST_SIZE];					// **< List of Multimedia Over Coax Alliance Interface. Possible values are moca0, moca1.
+	char GreIfList[IFLIST_SIZE];					// **< List of GRE Interface. Possible values are gre0, gre1.
+	char WiFiIfList[IFLIST_SIZE];					// **< List of Wifi Interface. Possible values are wlan0, wlan1.
 }bridgeDetails;
 
 
@@ -260,8 +260,8 @@ extern void removeIfaceFromList(char *str, const char *sub);
 
 /**
 * @brief Check if interface is attached to bridge.
-* @param[in] iface_name - Represents the interface name. It is vendor specific.
-* @param[in] bridge_name - Represents the bridge name. It is vendor specific.
+* @param[in] iface_name - Represents the interface name. Possible values are erouter0, eth0, eth1, wlan0
+* @param[in] bridge_name - Represents the bridge name. Possible values are brlan0, brlan1, br-home
 *
 * @return The result status of the operation.
 * @retval 0 on success.
