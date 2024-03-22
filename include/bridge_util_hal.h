@@ -43,7 +43,6 @@
 #include <stdbool.h>
 #include <time.h>
 #include <pthread.h>
-#include "OvsAgentApi.h"
 
 /**
  * @addtogroup BRIDGE_UTIL_OEM_DATA_TYPES
@@ -225,7 +224,7 @@ typedef struct bridgeDetails {
 * @param[in] ifNameToBeUpdated - Interface is to be deleted and updated, applicable only during sync. The possible value is "moca0", "wifi0", "eth0". This array should be 
 *                                null-terminated.
 * @param[in] Opr - Different network interface or bridge. It provides information about operations whether the request creating/updating/deleting bridge.
-*                  \n The range of acceptable values is 1 to 4 based on OVS_CMD enum type.
+*                  \n The range of acceptable values is 0 to 3 based on OVS_CMD enum type.
 * @param[in] type - Different types of interfaces and in case of sync delete the value is set to unknown/other.
 *                   \n The range of acceptable values is 1 to 7 based on INTERFACE_TYPE enum type.
 * 
