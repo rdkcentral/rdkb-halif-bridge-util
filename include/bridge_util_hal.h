@@ -118,6 +118,7 @@ extern time_t utc_time;						// Variable to store UTC time
  * each option is represented by a named constant with an associated integer.
  * 
  */
+
 enum Config {
 	PRIVATE_LAN = 1,					// **< Private Lan configuration
 	HOME_SECURITY = 2,					// **< Home Security configuration
@@ -223,7 +224,7 @@ typedef struct bridgeDetails {
 * @param[in] bridgeInfo - Hold the complete bridge information.
 * @param[in] ifNameToBeUpdated - Interface is to be deleted and updated, applicable only during sync. The possible value is "moca0", "wifi0", "eth0". This array should be 
 *                                null-terminated.
-* @param[in] Opr - Different network interface or bridge. It provides information about operations whether the request creating/updating/deleting bridge.
+* @param[in] Opr - Specifies the operation to be performed on a network interface or bridge.
 *                  \n The range of acceptable values is 0 to 3 based on OVS_CMD enum type.
 * @param[in] type - Different types of interfaces and in case of sync delete the value is set to unknown/other.
 *                   \n The range of acceptable values is 1 to 7 based on INTERFACE_TYPE enum type.
@@ -240,8 +241,8 @@ extern int updateBridgeInfo(bridgeDetails *bridgeInfo, char* ifNameToBeUpdated, 
 * @param[in] iface_name - Represents the name of the interface. It is vendor specific.
 *
 * @return The result status of the operation.
-* @retval 0 on success.
-* @retval -1 on failure.
+* @retval 0 on Success, INTERFACE_EXIST.
+* @retval -1 on Failure, INTERFACE_NOT_EXIST.
 *
 */
 extern int checkIfExists(char* iface_name);
@@ -268,12 +269,19 @@ extern void removeIfaceFromList(char *str, const char *sub);
 *
 */
 extern int checkIfExistsInBridge(char* iface_name, char *bridge_name);
+
 /**
 * TODO: InstanceNumber must use Config enum in the future.
 */
 
 /**
-* @brief Provides OEM/SOC specific changes which needs to be configured before creating/updating/deleting bridge.
+* TODO: The int passed to this both HandlePreConfigVendor & HandlePostConfigVendor 
+*       is incorrect, and needs to change to enum Config in both cases, but the enum 
+*	Config should also update to correctly describe what the field values are.
+*/
+
+/**
+* @brief This function has OEM/SOC specific changes which needs to be configured before creating/updating/deleting bridge.
 * @param[in] bridgeInfo - Hold the complte bridge information.
 * @param[in] InstanceNumber - Defines the instance number for configuration.
 *                             \n The range of acceptable values is 1 to 14 based on Config enum type.
@@ -290,7 +298,7 @@ int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 */
 
 /**
-* @brief Provides OEM/SOC specific changes which needs to be configured after creating/updating/deleting bridge.
+* @brief This function has OEM/SOC specific changes which needs to be configured after creating/updating/deleting bridge.
 * @param[in] bridgeInfo - Hold the complete bridge information. 
 * @param[in] Config - Defines the instance number for configuration.
 *                     \n The range of acceptable values is 1 to 14 based on Config enum type.
@@ -300,10 +308,15 @@ int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 * @retval -1 on failure.
 *
 */
+
+/** 
+* TODO: To specifically state that int should be enum Config
+*/
+ 
 int HandlePostConfigVendor(bridgeDetails *bridgeInfo,int Config);
 
 /**
-* @brief Retrieves a list of vendor-specific interface names. Provides vendor interface information for creating/updating/deleting bridge.
+* @brief Retrieves a list of vendor-specific interface names for bridge management. These names can be used for various network operations, such as creating, updating, or deleting network bridges.
 *
 * @return The result status of the operation.
 * @retval vendor interface which is a character array.
