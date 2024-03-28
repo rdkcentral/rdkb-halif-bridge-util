@@ -89,13 +89,11 @@ Following non functional requirement should be supported by the component.
 
 ## Logging and debugging requirements
 
-The Bridge Utils HAL component must record all errors and critical informative messages. This can be achieved by using either the printf or the syslog method. These tools are useful in identifying, and debugging the issues and understanding the functional flow of the system.
+The Bridge util HAL component must record all errors and critical informative messages. This can be achieved by using either the printf or the syslog method. These tools are useful in identifying, and debugging the issues and understanding the functional flow of the system.
 
-It is recommended that each HAL component follows the same logging process. If logging is required, vendors should log in to the bridge_util_vendor_hal.log file, which can be found in the /var/tmp/ or /rdklogs/logs/ directories.
+It is recommended that each HAL component follows the same logging process. If logging is required, vendors should log in to the `bridge_util_vendor_hal.log` file, which can be found in the `/var/tmp/` or `/rdklogs/logs/` directories.  
 
-To ensure consistency with Linux standard logging, it is recommended that log levels be defined.
-
-Log levels can be FATAL, ERROR, WARNING, NOTICE, INFO, DEBUG, TRACE
+Logging should be defined with log levels as per Linux standard logging. The logging levels specified by the Linux standard logging, in descending order of severity, are FATAL, ERROR, WARNING, NOTICE, INFO, DEBUG, TRACE.
 
 ## Memory and performance requirements
 
@@ -103,7 +101,7 @@ The component should not contributing more to memory and CPU utilization while p
 
 ## Quality Control
 
-Bridge Util HAL implementation should pass checks using any third party tools like `Coverity`, `Black duck`, `Valgrind` etc. without any issue to ensure quality.
+Bridge util HAL implementation should pass checks using any third-party tools like `Coverity`, `Black Duck`, `Valgrind` etc. without any issues to ensure quality.
 
 There should not be any memory leaks/corruption introduced by HAL and underneath 3rd party software implementation.
 
