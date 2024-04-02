@@ -24,7 +24,7 @@ Bridge Util HAL is an abstraction layer to interact with vendor software to cont
 
 ### Initialization and Startup
 
-The below-mentioned APIs initialize the Bridge util HAL layers/code. The Bridge util client module should call the mentioned APIs initially during bootup/initialization.
+The below-mentioned APIs initialize the Bridge util HAL layers/code. The Bridge util client module should call the mentioned APIs initially during bootup/initialization and when creating/updating/deleting bridge.
 
 1. `HandlePreConfigVendor()`
 2. `HandlePostConfigVendor()`
