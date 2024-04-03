@@ -43,6 +43,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <pthread.h>
+#include "OvsAgentApi.h"
 
 /**
  * @addtogroup BRIDGE_UTIL_OEM_DATA_TYPES
@@ -82,18 +83,17 @@ extern char ethWanIfaceName[64];				// Global character buffer for Ethernet Wan 
 extern struct tm *timeinfo;					// Pointer to struct to access time related information
 extern time_t utc_time;						// Variable to store UTC time
 
-/*
- *
- * TODO: Re-write the logging system to be generic.
- *
- */
-
 /**
  * @brief bridge_util_log(fmt ...) 
  * 
  * This macro logs formatted message using the provided format string and optional arguments.
  * message is written to log file if it is open or else it's printed to standard output.
  */
+
+/**
+ * TODO: Re-write the logging system to be generic.
+ */
+
 #define bridge_util_log(fmt ...)    {\
 				    		snprintf(log_buff, MAX_LOG_BUFF_SIZE-1,fmt);\
 				    		if(logFp != NULL){ \
@@ -119,6 +119,9 @@ extern time_t utc_time;						// Variable to store UTC time
  * 
  */
 
+/**
+ * TODO: Use enum Config in the future.
+ */
 enum Config {
 	PRIVATE_LAN = 1,					// **< Private Lan configuration
 	HOME_SECURITY = 2,					// **< Home Security configuration
@@ -271,37 +274,34 @@ extern void removeIfaceFromList(char *str, const char *sub);
 extern int checkIfExistsInBridge(char* iface_name, char *bridge_name);
 
 /**
-* TODO: InstanceNumber must use Config enum in the future.
+* @brief This function is called prior to creating, updating, or deleting a bridge to apply OEM/SOC specific configurations. 
+*        It must be invoked to ensure that any vendor-specific settings are correctly applied before any changes to the bridge.
+* @param[in] bridgeInfo - Hold the complte bridge information.
+* @param[in] InstanceNumber - Defines the instance number for configuration.
+*                             \n The range of acceptable values is 1 to 14, and 17 if WIFI_MANAGE_SUPPORTED is defined, based on Config enum type.
+* 
+* @return The result status of the operation.
+* @retval 0 on success.
+* @retval -1 on failure.
+*
 */
 
 /**
+* TODO: InstanceNumber must use Config enum in the future.
+*
 * TODO: The int passed to this both HandlePreConfigVendor & HandlePostConfigVendor 
 *       is incorrect, and needs to change to enum Config in both cases, but the enum 
 *	Config should also update to correctly describe what the field values are.
 */
 
-/**
-* @brief This function has OEM/SOC specific changes which needs to be configured before creating/updating/deleting bridge.
-* @param[in] bridgeInfo - Hold the complte bridge information.
-* @param[in] InstanceNumber - Defines the instance number for configuration.
-*                             \n The range of acceptable values is 1 to 14 based on Config enum type.
-* 
-* @return The result status of the operation.
-* @retval 0 on success.
-* @retval -1 on failure.
-*
-*/
 int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 
 /**
-* TODO: InstanceNumber must use Config enum in the future.
-*/
-
-/**
-* @brief This function has OEM/SOC specific changes which needs to be configured after creating/updating/deleting bridge.
+* @brief This function is called after creating, updating, or deleting a bridge to apply OEM/SOC specific configurations. 
+*        It ensures that any vendor-specific settings are correctly applied following changes to the bridge.
 * @param[in] bridgeInfo - Hold the complete bridge information. 
 * @param[in] Config - Defines the instance number for configuration.
-*                     \n The range of acceptable values is 1 to 14 based on Config enum type.
+*                     \n The range of acceptable values is 1 to 14, and 17 if WIFI_MANAGE_SUPPORTED is defined, based on Config enum type.
 * 
 * @return The result status of the operation.
 * @retval 0 on success.
@@ -309,10 +309,14 @@ int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 *
 */
 
-/** 
-* TODO: To specifically state that int should be enum Config
+/**
+* TODO: InstanceNumber must use Config enum in the future.
+*
+* TODO: The int passed to this both HandlePreConfigVendor & HandlePostConfigVendor 
+*       is incorrect, and needs to change to enum Config in both cases, but the enum 
+*	Config should also update to correctly describe what the field values are.
 */
- 
+
 int HandlePostConfigVendor(bridgeDetails *bridgeInfo,int Config);
 
 /**
