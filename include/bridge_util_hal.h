@@ -284,9 +284,6 @@ extern int checkIfExistsInBridge(char* iface_name, char *bridge_name);
 * @retval 0 on success.
 * @retval -1 on failure.
 *
-*/
-
-/**
 * TODO: InstanceNumber must use Config enum in the future.
 *
 * TODO: The int passed to this both HandlePreConfigVendor & HandlePostConfigVendor 
@@ -300,16 +297,12 @@ int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 * @brief This function is called after creating, updating, or deleting a bridge to apply OEM/SOC specific configurations. 
 *        It ensures that any vendor-specific settings are correctly applied following changes to the bridge.
 * @param[in] bridgeInfo - Hold the complete bridge information. 
-* @param[in] Config - Defines the instance number for configuration.
-*                     \n The range of acceptable values is 1 to 14, and 17 if WIFI_MANAGE_SUPPORTED is defined, based on Config enum type.
+* @param[in] Config - Defines the instance number for configuration. 
 * 
 * @return The result status of the operation.
 * @retval 0 on success.
 * @retval -1 on failure.
 *
-*/
-
-/**
 * TODO: InstanceNumber must use Config enum in the future.
 *
 * TODO: The int passed to this both HandlePreConfigVendor & HandlePostConfigVendor 
