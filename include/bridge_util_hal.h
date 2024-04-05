@@ -88,9 +88,7 @@ extern time_t utc_time;						// Variable to store UTC time
  * 
  * This macro logs formatted message using the provided format string and optional arguments.
  * message is written to log file if it is open or else it's printed to standard output.
- */
-
-/**
+ *
  * TODO: Re-write the logging system to be generic.
  */
 
@@ -117,9 +115,6 @@ extern time_t utc_time;						// Variable to store UTC time
  * setting for network type, security and management features 
  * each option is represented by a named constant with an associated integer.
  * 
- */
-
-/**
  * TODO: Use enum Config in the future.
  */
 enum Config {
@@ -142,16 +137,14 @@ enum Config {
 };
 
 /**
- * TODO: Correct Inconsistent coding standards in the enum definitions
- */
-
-/**
  * @enum INTERFACE_TYPE
  *
  * @brief Defines interface types for network configuration and management in BridgeUtils.
  * 
  * This enum defines different interface types such as Wired, wireless 
  * interfaces for use with BridgeUtils API's
+ *
+ * TODO: Correct Inconsistent coding standards in the enum definitions
  */
 enum INTERFACE_TYPE {
     IF_BRIDGE_BRIDGEUTIL = 1, 	        // **< Represents Bridge Interface for BridgeUtil
@@ -164,13 +157,11 @@ enum INTERFACE_TYPE {
 };
 
 /**
- * TODO: Correct Inconsistent coding standards in the enum definitions
- */
-
-/**
  * @enum BridgeOpr
  *
  * @brief Enumerates different Operations related to  BridgeUtils API's.
+ *
+ * TODO: Correct Inconsistent coding standards in the enum definitions
  */
 enum BridgeOpr {
 	DELETE_BRIDGE = 0, 	// **< Operation to Delete bridge
@@ -182,10 +173,6 @@ enum BridgeOpr {
                 STRUCTURE DEFINITIONS
 **********************************************************************/
 
-/*
- * TODO: Coding standards are inconsistent in this file and should be corrected.
- */
-
 /**
  * @struct bridgeDetails
  * @brief Details of bridge configuration
@@ -194,6 +181,8 @@ enum BridgeOpr {
  * It is designed to encapsulate all the necessary details required for the setup, management, and operation of a 
  * network bridge. This includes not only the identification and categorization of the bridge (through names and VLAN IDs)
  * but also the association of various network interfaces like Ethernet, MoCA, GRE, and WiFi with the bridge. 
+ *
+ * TODO: Coding standards are inconsistent in this file and should be corrected.
  */
 
 typedef struct bridgeDetails {
@@ -215,26 +204,24 @@ typedef struct bridgeDetails {
  * @{
  */
 
-/*
- * TODO: Extend the return codes by listing out the possible reasons of failure, to improve the interface in the future. This was reported during the review for header file migration to opensource github.
- *
- * TODO: correct usage of enum types, and not int.
- *
- */
-
 /**
-* @brief Provides the details of a specified network bridge based on the provided operation and type. 
-* @param[in] bridgeInfo - Hold the complete bridge information.
-* @param[in] ifNameToBeUpdated - Interface is to be deleted and updated, applicable only during sync. The possible value is "moca0", "wifi0", "eth0". This array should be 
-*                                null-terminated.
-* @param[in] Opr - Specifies the operation to be performed on a network interface or bridge.
-*                  \n The range of acceptable values is 0 to 3 based on OVS_CMD enum type.
-* @param[in] type - Different types of interfaces and in case of sync delete the value is set to unknown/other.
-*                   \n The range of acceptable values is 1 to 7 based on INTERFACE_TYPE enum type.
+* @brief Upgrades the details of a specified network bridge based on the provided operation and type. 
+* @param[in] bridgeInfo        - Hold the complete bridge information structure.
+* @param[in] ifNameToBeUpdated - Interface name to be deleted and updated, applicable only during sync. 
+*                                The possible values are "moca0", "wifi0" and "eth0". This name should be null-terminated.
+*
+* @param[in] Opr  - Specifies the operation to be performed on a network interface or bridge. `enum OVS_CMD` should be cast to an `int` to use this param.\n
+*                   The range of acceptable values is from `enum OVS_CMD`.\n
+* @param[in] type - Types of interfaces and in case of sync delete the value is set to IF_OTHER_BRIDGEUTIL.\n
+*                   `enum INTERFACE_TYPE` should be cast to an `int` to use this param.\n
+*                   The range of acceptable values is from `enum INTERFACE_TYPE`.\n
 * 
 * @return The result status of the operation.
 * @retval 0 on success.
 * @retval -1 on failure.
+*
+* TODO: Correct usage of `enum OVS_CMD Opt` instead of `int Opt`
+* TODO: Correct usage of `enum INTERFACE_TYPE type` instead of `int type`
 *
 */
 extern int updateBridgeInfo(bridgeDetails *bridgeInfo, char* ifNameToBeUpdated, int Opr , int type);
@@ -251,12 +238,10 @@ extern int updateBridgeInfo(bridgeDetails *bridgeInfo, char* ifNameToBeUpdated, 
 extern int checkIfExists(char* iface_name);
 
 /**
-* @brief Remove interface from the list of interfaces.
+* @brief Remove interface from the list of interfaces. If the specified interface name is not found in the list, no action is taken.
+*        This function does not report an error in such cases.
 * @param[in] str - List of interfaces name. The possible value is "wl0 wl11 moca0 ath0 eth3".
 * @param[in] sub - Interface name that needs to be removed from the list. The possible value is "moca0".
-*
-* @note If the specified interface name is not found in the list, no action is taken.
-*       This function does not report an error in such cases.
 *
 */
 extern void removeIfaceFromList(char *str, const char *sub);
@@ -274,40 +259,37 @@ extern void removeIfaceFromList(char *str, const char *sub);
 extern int checkIfExistsInBridge(char* iface_name, char *bridge_name);
 
 /**
-* @brief This function is called prior to creating, updating, or deleting a bridge to apply OEM/SOC specific configurations. 
-*        It must be invoked to ensure that any vendor-specific settings are correctly applied before any changes to the bridge.
-* @param[in] bridgeInfo - Hold the complte bridge information.
-* @param[in] InstanceNumber - Defines the instance number for configuration.
-*                             \n The range of acceptable values is 1 to 14, and 17 if WIFI_MANAGE_SUPPORTED is defined, based on Config enum type.
+* @brief This function will apply OEM/SOC-specific configurations and is called before updateBridgeInfo() by the client
+*        A bridge is created, updated, or deleted by calling updateBridgeInfo().
+*        This will ensure that any vendor-specific settings are correctly applied before any changes to the bridge.
+* @param[in] bridgeInfo     - Hold the complete bridge information.
+* @param[in] InstanceNumber - Defines the instance number for configuration by casting `enum Config` to an int when using this function.\n
+*                             The range of acceptable values is defined by `enum Config`.
 * 
 * @return The result status of the operation.
 * @retval 0 on success.
 * @retval -1 on failure.
+* @see updateBridgeInfo()
 *
-* TODO: InstanceNumber must use Config enum in the future.
-*
-* TODO: The int passed to this both HandlePreConfigVendor & HandlePostConfigVendor 
-*       is incorrect, and needs to change to enum Config in both cases, but the enum 
-*	Config should also update to correctly describe what the field values are.
+* TODO: `int InstanceNumber` should be stated as `enum Config InstanceNumber`.
 */
 
 int HandlePreConfigVendor(bridgeDetails *bridgeInfo,int InstanceNumber);
 
 /**
-* @brief This function is called after creating, updating, or deleting a bridge to apply OEM/SOC specific configurations. 
-*        It ensures that any vendor-specific settings are correctly applied following changes to the bridge.
+* @brief  This function will apply OEM/SOC-specific configurations and is called after updateBridgeInfo() by the client
+*        A bridge is created, updated, or deleted by calling updateBridgeInfo().
+*        This will ensure that any vendor-specific settings are correctly applied after any changes to the bridge.
 * @param[in] bridgeInfo - Hold the complete bridge information. 
-* @param[in] Config - Defines the instance number for configuration. 
+* @param[in] Config     - Defines the instance number for configuration by casting `enum Config` to an int when using this function.\n
+*                         The range of acceptable values is defined by `enum Config`.
 * 
 * @return The result status of the operation.
 * @retval 0 on success.
 * @retval -1 on failure.
+* @see updateBridgeInfo()
 *
-* TODO: InstanceNumber must use Config enum in the future.
-*
-* TODO: The int passed to this both HandlePreConfigVendor & HandlePostConfigVendor 
-*       is incorrect, and needs to change to enum Config in both cases, but the enum 
-*	Config should also update to correctly describe what the field values are.
+* TODO: `int InstanceNumber` should be stated as `enum Config Config`.
 */
 
 int HandlePostConfigVendor(bridgeDetails *bridgeInfo,int Config);
@@ -315,7 +297,7 @@ int HandlePostConfigVendor(bridgeDetails *bridgeInfo,int Config);
 /**
 * @brief Retrieves a list of vendor-specific interface names for bridge management. These names can be used for various network operations, such as creating, updating, or deleting network bridges.
 *
-* @return The result status of the operation.
+* @returns zero terminated vendor interface name string, or NULL for no interfaces
 * @retval vendor interface which is a character array.
 * @retval NULL - is returned if there are no interfaces
 *
