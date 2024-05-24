@@ -91,7 +91,7 @@ Following non functional requirement should be supported by the component.
 
 The Bridge util HAL component must record all errors and critical informative messages. This can be achieved by using either the printf or the syslog method. These tools are useful in identifying, and debugging the issues and understanding the functional flow of the system.
 
-It is recommended that each HAL component follows the same logging process. If logging is required, vendors should log in to the `bridge_util_vendor_hal.log` file, which can be found in the `/var/tmp/` or `/rdklogs/logs/` directories.  
+It is recommended that each HAL component follows the same logging process. If logging is required, vendors should log in to the `bridgeUtils.log` file, which can be found in the `/var/tmp/` or `/rdklogs/logs/` directories.  
 
 Logging should be defined with log levels as per Linux standard logging. The logging levels specified by the Linux standard logging, in descending order of severity, are FATAL, ERROR, WARNING, NOTICE, INFO, DEBUG, TRACE.
 
