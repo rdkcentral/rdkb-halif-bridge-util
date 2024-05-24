@@ -43,7 +43,6 @@
 #include <stdbool.h>
 #include <time.h>
 #include <pthread.h>
-#include "OvsAgentApi.h"
 
 /**
  * @addtogroup BRIDGE_UTIL_OEM_DATA_TYPES
