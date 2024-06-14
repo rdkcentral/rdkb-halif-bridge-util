@@ -18,7 +18,6 @@
 */
 #ifndef _NETWORK_INTERFACE_H_
 #define _NETWORK_INTERFACE_H_
-#if !defined(USE_LINUX_BRIDGE)
 
 /** \def MAX_IF_NAME_SIZE
     \brief Size of a network interface's name string.
