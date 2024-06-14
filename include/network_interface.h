@@ -90,5 +90,4 @@ typedef struct Gateway_Config_Non_Ovs_Bridge
     IF_TYPE if_type; /**< Network interface type. */
     BR_CMD if_cmd; /**< Network interface/bridge command. */
 } Gateway_Config_Non_Ovs_Bridge;
-typedef Gateway_Config_Non_Ovs_Bridge Gateway_Config_t;
 #endif
