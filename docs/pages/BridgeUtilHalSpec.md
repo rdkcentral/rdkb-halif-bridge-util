@@ -5,6 +5,7 @@
 - `HAL` \- Hardware Abstraction Layer
 - `RDK-B` \- Reference Design Kit for Broadband Devices
 - `OEM` \- Original Equipment Manufacture
+- `OVS` \- Open vSwitch
 
 ## Description
 
@@ -128,6 +129,8 @@ None
 All HAL function prototypes and datatype definitions are available in `bridge_util_hal.h` file.
      1. Components/Process must include bridge_util_hal.h to make use of Bridge Util HAL capabilities.
      2. Components/Process should add linker dependency for `libbridge_utils.so`.
+
+There is another network_interface.h file that is used to eliminate the build-time dependency on bridge utilities from OVS. This file includes details about network interfaces, such as types of interfaces, commands for interfaces and bridges, and a structure containing information about the Gateway Config table.
 
 ## Theory of operation and key concepts
 
