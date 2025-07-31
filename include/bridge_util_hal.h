@@ -129,7 +129,9 @@ enum Config {
 	ETH_BACKHAUL = 11,					// **< ETH Backhaul configuration
 	MESH = 12,						// **< Mesh configuration
 	MESH_WIFI_BACKHAUL_2G = 13,			        // **< Mesh Wifi backhaul 2G configuration
-	MESH_WIFI_BACKHAUL_5G = 14			        // **< Mesh Wifi backhaul 5G configuration
+	MESH_WIFI_BACKHAUL_5G = 14,                             // **< Mesh Wifi backhaul 5G configuration
+        MESH_ONBOARD = 18,					// **< Mesh Onboard configuration
+        MESH_WIFI_ONBOARD_2G = 19			        // **< Mesh Wifi onboard 2G configuration
 #if defined  (WIFI_MANAGE_SUPPORTED)
         ,MANAGE_WIFI_BRIDGE = 17		                // **< Manage Wifi bridge configuration
 #endif /* WIFI_MANAGE_SUPPORTED*/
