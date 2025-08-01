@@ -135,7 +135,7 @@ enum Config {
 #if defined  (WIFI_MANAGE_SUPPORTED)
         ,MANAGE_WIFI_BRIDGE = 17		                // **< Manage Wifi bridge configuration
 #endif /* WIFI_MANAGE_SUPPORTED*/
-#if defined (AMENITIES_NETWORK_ENABLED)
+#if defined (AMENITIES_NETWORK_ENABLED) && !defined (_CBR2_PRODUCT_REQ_)
     ,AMENITY_BRIDGE_2G = 20,
     AMENITY_BRIDGE_5G = 21,
     AMENITY_BRIDGE_6G = 22
