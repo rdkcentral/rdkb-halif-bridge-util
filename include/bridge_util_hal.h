@@ -200,6 +200,7 @@ typedef struct bridgeDetails {
 	char MoCAIfList[IFLIST_SIZE];					// **< List of Multimedia Over Coax Alliance Interface. Possible values are moca0, moca1.
 	char GreIfList[IFLIST_SIZE];					// **< List of GRE Interface. Possible values are gre0, gre1.
 	char WiFiIfList[IFLIST_SIZE];					// **< List of Wifi Interface. Possible values are wlan0, wlan1.
+	char RndisIfList[IFLIST_SIZE];                                  // **< List of Rndis Interface. Possible values are eth0, usb0.
 }bridgeDetails;
 
 
